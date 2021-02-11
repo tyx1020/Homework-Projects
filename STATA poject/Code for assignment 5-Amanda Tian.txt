@@ -1,0 +1,37 @@
+* 1
+
+asdoc probit approve white
+asdoc mfx compute
+
+
+asdoc reg approve white
+
+
+* 2
+asdoc probit approve white hrat obrat loanprc unem male married dep sch cosign chist pubrec mortlat1 mortlat2 vr
+asdoc mfx compute, at(mean white=1)
+
+* 3
+asdoc logit approve white hrat obrat loanprc unem male married dep sch cosign chist pubrec mortlat1 mortlat2 vr
+asdoc mfx compute, at(mean white=1)
+
+* 4
+asdoc sum white hrat obrat loanprc unem male married dep sch cosign chist pubrec mortlat1 mortlat2 vr
+
+* logit inlf nwifeinc educ exper expersq age kidslt6 kidsge6
+
+* Example 17.2: Married Women's Annual Labor Supply
+
+* use mroz, clear
+* regress hours nwifeinc educ exper expersq age kidslt6 kidsge6
+
+* tobit hours nwifeinc educ exper expersq age kidslt6 kidsge6, ll(0)
+* summ exper,meanonly
+* local exp2=r(mean)^2
+* mfx compute, at(mean expersq=`exp2') predict(ystar(0,.))
+* mfx compute, at(mean expersq=`exp2') predict(e(0,.))
+
+
+* est store wage3
+
+* esttab wage1 wage2 wage3 using wage_result, b(%9.3f) star(* 0.10 ** 0.05 *** 0.01) ar2 se(%9.2f) title("OLS/RE/FE regression estimates") csv nogaps replace 
